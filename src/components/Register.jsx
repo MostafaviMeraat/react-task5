@@ -11,6 +11,7 @@ const Register = () => {
   const [check, setCheck] = useState(true)
   const [isSent, setIsSent] = useState(false)
   const [check2, setCheck2] = useState(true)
+  const [isSentUpdate, setIsSentUpdate] = useState(false)
 
   useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/posts', {
@@ -33,6 +34,29 @@ const Register = () => {
 
   }, [isSent])
 
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/posts/1', {
+      method: 'PUT',
+      body: JSON.stringify({
+        id: 1,
+        title: { titleVal },
+        body: { bodyVal },
+        userId: { userIdVal }
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+      .then(res => res.json())
+      .then(data => setUserData(data))
+
+    return () => {
+      // console.log('yes')
+    }
+
+  }, [isSentUpdate])
+  // console.log(userData)
+
   const handleSubmit = () => {
 
     if (titleVal && bodyVal !== '') {
@@ -52,11 +76,17 @@ const Register = () => {
 
   const handleEdit = () => {
     setCheck(false)
+
+    setTimeout(() => {
+      setTitleVal('')
+      setbodyVal('')
+      setuserIdVal(0)
+    }, 100)
   }
 
   const handleUpdate = () => {
     setCheck(false)
-    setIsSent(!isSent)
+    setIsSentUpdate(!isSentUpdate)
   }
 
   return (<Fragment>
@@ -123,7 +153,7 @@ const Register = () => {
           
         : 
           <div className="userInfo">
-            <h2>Change your Info</h2>
+            <h2>Change your Info</h2  >
             <input type='text' value={userData.title.titleVal} />
             <input type='text' value={userData.body.bodyVal} />
             <input type='number' value={userData.userId.userIdVal} />
